@@ -60,15 +60,11 @@ public class TransactionTab {
         // Buttons
         Button addBtn = new Button("Add Transaction");
         Button deleteBtn = new Button("Delete Transaction");
-        Button addCategoryBtn = new Button("Add Category");
-        Button deleteCategoryBtn = new Button("Delete Category");
 
         addBtn.setOnAction(e -> addTransaction());
         deleteBtn.setOnAction(e -> deleteTransaction());
-        addCategoryBtn.setOnAction(e -> addCategory());
-        deleteCategoryBtn.setOnAction(e -> deleteCategory());
 
-        HBox buttons = new HBox(10, addBtn, deleteBtn, addCategoryBtn, deleteCategoryBtn);
+        HBox buttons = new HBox(10, addBtn, deleteBtn);
 
         // Summary labels
         incomeLabel = new Label();
@@ -126,24 +122,6 @@ public class TransactionTab {
         }
     }
 
-    private void addCategory() {
-        try {
-            TextInputDialog categoryDialog = new TextInputDialog();
-            categoryDialog.setHeaderText("Enter Category");
-            String categoryName = categoryDialog.showAndWait().orElse(null);
-
-            Category category = manager.findCategoryByName(categoryName);
-            if (category == null) {
-                manager.addCategory(categoryName);
-            }
-
-            showSuccess("Category Saved");
-
-        } catch (Exception e) {
-            showError("Invalid input.");
-        }
-    }
-
     private void deleteTransaction() {
         int index = table.getSelectionModel().getSelectedIndex();
         if (index >= 0) {
@@ -153,25 +131,6 @@ public class TransactionTab {
             saveData();
             updateSummary();
         }
-    }
-
-    private void deleteCategory() {
-        manager.deleteCategory(selectCategory("Delete Category").getName());
-        showSuccess("Category Deleted");
-    }
-
-    private Category selectCategory(String msg) {
-        try {
-            List<Category> categoryList = manager.getCategories();
-            ChoiceDialog<Category> categoryDialog = new ChoiceDialog<>(categoryList.get(0), categoryList);
-            categoryDialog.setHeaderText(msg);
-            Category category = categoryDialog.showAndWait().orElse(null);
-            return category;
-        } catch (Exception e) {
-            showError("Category list is empty.");
-            return null;
-        }
-        
     }
 
     private void updateSummary() {
@@ -203,9 +162,4 @@ public class TransactionTab {
         alert.showAndWait();
     }
 
-    private void showSuccess(String msg) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(msg);
-        alert.showAndWait();
-    }
 }

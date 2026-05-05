@@ -11,6 +11,7 @@ public class MainApp extends Application {
     private final FinanceManager manager = new FinanceManager();
     private final DataStore store = new DataStore();
     private final TransactionTab transactionTabContent = new TransactionTab(manager, store);
+    private final CategoriesTab categoriesTabContent = new CategoriesTab(manager, store);
 
     @Override
     public void start(Stage stage) {
@@ -25,12 +26,11 @@ public class MainApp extends Application {
         TabPane tabPane = new TabPane();
         Tab dashboardTab = new Tab("Dashboard");
         Tab transactionsTab = transactionTabContent.createTab();
-        Tab categoriesTab = new Tab("Categories");
+        Tab categoriesTab = categoriesTabContent.createTab();
         Tab budgetsTab = new Tab("Budgets");
         Tab reportsTab = new Tab("Reports");
 
         dashboardTab.setClosable(false);
-        categoriesTab.setClosable(false);
         budgetsTab.setClosable(false);
         reportsTab.setClosable(false);
         
