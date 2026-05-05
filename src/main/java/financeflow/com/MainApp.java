@@ -58,7 +58,11 @@ public class MainApp extends Application {
         TableColumn<Transaction, String> categoryCol = new TableColumn<>("Category");
         categoryCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getCategory().getName()));
 
-        table.getColumns().addAll(typeCol, amountCol, dateCol, categoryCol);
+        TableColumn<Transaction, String> noteCol = new TableColumn<>("Note");
+        noteCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNote()));
+        noteCol.setPrefWidth(290);
+
+        table.getColumns().addAll(typeCol, amountCol, dateCol, categoryCol, noteCol);
 
         // Buttons
         Button addBtn = new Button("Add Transaction");
@@ -107,11 +111,15 @@ public class MainApp extends Application {
             categoryDialog.setHeaderText("Select Category Type");
             Category category = categoryDialog.showAndWait().orElse(null);
 
+            TextInputDialog noteDialog = new TextInputDialog();
+            noteDialog.setHeaderText("Enter Note");
+            String note = noteDialog.showAndWait().orElse(null);
+
             Transaction transaction;
             if (type.equals("Income")) {
-                transaction = new IncomeTransaction(amount, LocalDate.now(), category, "");
+                transaction = new IncomeTransaction(amount, LocalDate.now(), category, note);
             } else {
-                transaction = new ExpenseTransaction(amount, LocalDate.now(), category, "");
+                transaction = new ExpenseTransaction(amount, LocalDate.now(), category, note);
             }
 
             manager.addTransaction(transaction);
