@@ -13,6 +13,7 @@ public class MainApp extends Application {
     private final TransactionTab transactionTabContent = new TransactionTab(manager, store);
     private final CategoriesTab categoriesTabContent = new CategoriesTab(manager, store);
     private final BudgetsTab budgetsTabContent = new BudgetsTab(manager, store);
+    private final ReportsTab reportsTabContent = new ReportsTab(manager, store);
 
     @Override
     public void start(Stage stage) {
@@ -29,7 +30,7 @@ public class MainApp extends Application {
         Tab transactionsTab = transactionTabContent.createTab();
         Tab categoriesTab = categoriesTabContent.createTab();
         Tab budgetsTab = budgetsTabContent.createTab();
-        Tab reportsTab = new Tab("Reports");
+        Tab reportsTab = reportsTabContent.createTab();
 
         dashboardTab.setClosable(false);
         reportsTab.setClosable(false);

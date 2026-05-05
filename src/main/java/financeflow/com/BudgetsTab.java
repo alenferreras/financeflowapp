@@ -61,7 +61,6 @@ public class BudgetsTab {
 
         HBox buttons = new HBox(10, addBtn, modifyBtn, updateBtn);
 
-
         VBox root = new VBox(10, table, buttons);
         root.setPadding(new Insets(15));
 
@@ -77,10 +76,11 @@ public class BudgetsTab {
             ChoiceDialog<Category> categoryDialog = new ChoiceDialog<>(categoryList.get(0), categoryList);
             categoryDialog.setHeaderText("Select Category");
             Category category = categoryDialog.showAndWait().orElse(null);
+            if (category == null) return;
 
             TextInputDialog amountDialog = new TextInputDialog();
             amountDialog.setHeaderText("Set Budget");
-            double amount = Double.parseDouble(amountDialog.showAndWait().orElse("0"));
+            double amount = Double.parseDouble(amountDialog.showAndWait().orElse(null));
 
             manager.setBudget(category.getName(), amount);
             updateData();
