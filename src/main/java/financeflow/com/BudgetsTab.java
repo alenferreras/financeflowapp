@@ -53,11 +53,13 @@ public class BudgetsTab {
         // Buttons
         Button addBtn = new Button("Add Budget");
         Button modifyBtn = new Button("Modify Budget");
+        Button updateBtn = new Button("Update Remaining Budget");
 
         addBtn.setOnAction(e -> addBudget());
         modifyBtn.setOnAction(e -> modifyBudget());
+        updateBtn.setOnAction(e -> updateData());
 
-        HBox buttons = new HBox(10, addBtn, modifyBtn);
+        HBox buttons = new HBox(10, addBtn, modifyBtn, updateBtn);
 
 
         VBox root = new VBox(10, table, buttons);
