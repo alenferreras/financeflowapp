@@ -112,10 +112,9 @@ public class TransactionTab {
             }
 
             manager.addTransaction(transaction);
-            data.setAll(manager.getTransactions());
-
             saveData();
             updateSummary();
+            updateData();
 
         } catch (Exception e) {
             showError("Invalid input.");
@@ -126,7 +125,7 @@ public class TransactionTab {
         int index = table.getSelectionModel().getSelectedIndex();
         if (index >= 0) {
             manager.deleteTransaction(index);
-            data.setAll(manager.getTransactions());
+            updateData();
 
             saveData();
             updateSummary();
@@ -147,6 +146,10 @@ public class TransactionTab {
         incomeLabel.setText("Total Income: " + income);
         expenseLabel.setText("Total Expenses: " + expenses);
         balanceLabel.setText("Balance: " + (income - expenses));
+    }
+
+    private void updateData() {
+        data.setAll(manager.getTransactions());
     }
 
     private void saveData() {

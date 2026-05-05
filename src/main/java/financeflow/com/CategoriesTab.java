@@ -65,7 +65,7 @@ public class CategoriesTab {
             }
 
             saveData();
-            data.setAll(manager.getCategories());
+            updateData();
 
         } catch (Exception e) {
             showError("Invalid input.");
@@ -77,7 +77,7 @@ public class CategoriesTab {
             int index = list.getSelectionModel().getSelectedIndex();
             if (index >= 0) {
                 manager.deleteCategory(manager.getCategories().get(index).getName());
-                data.setAll(manager.getCategories());
+                updateData();
 
                 saveData();
             }
@@ -95,7 +95,7 @@ public class CategoriesTab {
                 categoryDialog.setHeaderText("Rename Category");
                 String newName = categoryDialog.showAndWait().orElse(null);
                 manager.renameCategory(oldname, newName);
-                data.setAll(manager.getCategories());
+                updateData();
 
                 saveData();
             }
@@ -103,6 +103,10 @@ public class CategoriesTab {
         } catch (Exception e) {
             showError("Invalid input.");
         }
+    }
+
+    private void updateData() {
+        data.setAll(manager.getCategories());
     }
 
     private void saveData() {

@@ -81,7 +81,7 @@ public class BudgetsTab {
             double amount = Double.parseDouble(amountDialog.showAndWait().orElse("0"));
 
             manager.setBudget(category.getName(), amount);
-            data.setAll(manager.getBudgets());
+            updateData();
             saveData();
 
         } catch (Exception e) {
@@ -98,7 +98,7 @@ public class BudgetsTab {
                 double amount = Double.parseDouble(amountDialog.showAndWait().orElse("0"));
 
                 manager.setBudget(data.get(index).getCategory().getName(), amount);
-                data.setAll(manager.getBudgets());
+                updateData();
                 saveData();
             }
         } catch (Exception e) {
@@ -106,6 +106,10 @@ public class BudgetsTab {
         }
     }
     
+    private void updateData() {
+        data.setAll(manager.getBudgets());
+    }
+
     private void saveData() {
         try {
             store.save(manager, "data/finance_data.txt");
