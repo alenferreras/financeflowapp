@@ -93,11 +93,6 @@ public class MainApp extends Application {
 
     private void addTransaction() {
         try {
-            try {
-                if (manager.getCategories().isEmpty()) return;
-            } catch (Exception e) {
-                showError("Add a category");
-            }
             ChoiceDialog<String> typeDialog = new ChoiceDialog<>("Expense", "Income", "Expense");
             typeDialog.setHeaderText("Select Transaction Type");
             String type = typeDialog.showAndWait().orElse(null);
@@ -134,12 +129,14 @@ public class MainApp extends Application {
         try {
             TextInputDialog categoryDialog = new TextInputDialog();
             categoryDialog.setHeaderText("Enter Category");
-            String categoryName = categoryDialog.showAndWait().orElse("General");
+            String categoryName = categoryDialog.showAndWait().orElse(null);
 
             Category category = manager.findCategoryByName(categoryName);
             if (category == null) {
                 manager.addCategory(categoryName);
             }
+
+            showSuccess("Category Saved");
 
         } catch (Exception e) {
             showError("Invalid input.");
@@ -158,16 +155,22 @@ public class MainApp extends Application {
     }
 
     private void deleteCategory() {
+        manager.deleteCategory(selectCategory("Delete Category").getName());
+        showSuccess("Category Deleted");
+    }
+
+    private Category selectCategory(String msg) {
         try {
             List<Category> categoryList = manager.getCategories();
             ChoiceDialog<Category> categoryDialog = new ChoiceDialog<>(categoryList.get(0), categoryList);
-            categoryDialog.setHeaderText("Delete Category");
+            categoryDialog.setHeaderText(msg);
             Category category = categoryDialog.showAndWait().orElse(null);
-            manager.deleteCategory(category.getName());
-
+            return category;
         } catch (Exception e) {
-            showError("There are no categories to delete.");
+            showError("Category list is empty.");
+            return null;
         }
+        
     }
 
     private void updateSummary() {
@@ -196,6 +199,12 @@ public class MainApp extends Application {
 
     private void showError(String msg) {
         Alert alert = new Alert(Alert.AlertType.ERROR, msg);
+        alert.showAndWait();
+    }
+
+    private void showSuccess(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(msg);
         alert.showAndWait();
     }
 
