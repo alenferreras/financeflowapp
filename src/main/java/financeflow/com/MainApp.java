@@ -12,6 +12,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
@@ -40,7 +42,20 @@ public class MainApp extends Application {
         } catch (Exception e) {
             System.out.println("No previous data found.");
         }
+        
+        TabPane tabPane = new TabPane();
+        Tab dashboardTab = new Tab("Dashboard");
+        Tab transactionsTab = new Tab("Transactions");
+        Tab categoriesTab = new Tab("Categories");
+        Tab budgetsTab = new Tab("Budgets");
+        Tab reportsTab = new Tab("Reports");
 
+        dashboardTab.setClosable(false);
+        transactionsTab.setClosable(false);
+        categoriesTab.setClosable(false);
+        budgetsTab.setClosable(false);
+        reportsTab.setClosable(false);
+        
         table = new TableView<>();
         data = FXCollections.observableArrayList(manager.getTransactions());
         table.setItems(data);
@@ -88,12 +103,18 @@ public class MainApp extends Application {
 
         VBox root = new VBox(10, table, buttons, summary);
         root.setPadding(new Insets(15));
+        
+        transactionsTab.setContent(root);
 
-        Scene scene = new Scene(root, 600, 400);
+        tabPane.getTabs().addAll(dashboardTab, transactionsTab, categoriesTab, budgetsTab, reportsTab);
+
+        Scene scene = new Scene(tabPane, 600, 400);
         stage.setScene(scene);
         stage.setTitle("FinanceFlow");
         stage.show();
     }
+
+
 
     private void addTransaction() {
         try {
