@@ -97,7 +97,7 @@ public class TransactionTab {
 
             List<Category> categoryList = manager.getCategories();
             ChoiceDialog<Category> categoryDialog = new ChoiceDialog<>(categoryList.get(0), categoryList);
-            categoryDialog.setHeaderText("Select Category Type");
+            categoryDialog.setHeaderText("Select Category");
             Category category = categoryDialog.showAndWait().orElse(null);
 
             TextInputDialog noteDialog = new TextInputDialog();

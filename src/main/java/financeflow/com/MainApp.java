@@ -12,6 +12,7 @@ public class MainApp extends Application {
     private final DataStore store = new DataStore();
     private final TransactionTab transactionTabContent = new TransactionTab(manager, store);
     private final CategoriesTab categoriesTabContent = new CategoriesTab(manager, store);
+    private final BudgetsTab budgetsTabContent = new BudgetsTab(manager, store);
 
     @Override
     public void start(Stage stage) {
@@ -27,11 +28,10 @@ public class MainApp extends Application {
         Tab dashboardTab = new Tab("Dashboard");
         Tab transactionsTab = transactionTabContent.createTab();
         Tab categoriesTab = categoriesTabContent.createTab();
-        Tab budgetsTab = new Tab("Budgets");
+        Tab budgetsTab = budgetsTabContent.createTab();
         Tab reportsTab = new Tab("Reports");
 
         dashboardTab.setClosable(false);
-        budgetsTab.setClosable(false);
         reportsTab.setClosable(false);
         
         tabPane.getTabs().addAll(dashboardTab, transactionsTab, categoriesTab, budgetsTab, reportsTab);
