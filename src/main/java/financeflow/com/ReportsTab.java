@@ -3,6 +3,8 @@ package financeflow.com;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,11 +21,12 @@ import javafx.scene.layout.VBox;
 
 public class ReportsTab {
     private TableView<Transaction> transactionTable;
-    private ObservableList<Transaction> transactionsData;
+    private ObservableList<Transaction> transactionsData; 
 
     private final FinanceManager manager;
     private final DataStore store;
     private final YearMonth month;
+    private MonthlyReport report;
 
     private Label incomeLabel;
     private Label expenseLabel;
@@ -33,10 +36,12 @@ public class ReportsTab {
         manager = financeManager;
         store = dataStore;
         month = YearMonth.from(LocalDate.now());
-
+        Map<String, Double> map = new HashMap<>();
+        report = new MonthlyReport(0, 0, map);
     }
 
     public Tab createTab(){
+        //Transaction Table
         transactionTable = new TableView<>();
         transactionsData = FXCollections.observableArrayList(manager.getTransactions());
         transactionTable.setItems(transactionsData);
@@ -56,10 +61,25 @@ public class ReportsTab {
 
         TableColumn<Transaction, String> noteCol = new TableColumn<>("Note");
         noteCol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNote()));
-        noteCol.setPrefWidth(290);
+        noteCol.setPrefWidth(200);
 
         transactionTable.getColumns().addAll(typeCol, amountCol, dateCol, categoryCol, noteCol);
         
+
+        //Category Breakdown Table
+        TableView<Map.Entry<String, Double>> categoryTable = new TableView<>();
+        ObservableList<Map.Entry<String, Double>> items = FXCollections.observableArrayList(report.getCategoryBreakdown().entrySet());
+        categoryTable.setItems(items);
+
+        //Table Columns
+        TableColumn<Map.Entry<String, Double>, String> catColumn = new TableColumn<>("Category");
+        catColumn.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getKey()));
+        
+        TableColumn<Map.Entry<String, Double>, String> budgetColumn = new TableColumn<>("Remaining Budget");
+        budgetColumn.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(String.valueOf(c.getValue().getValue())));
+        budgetColumn.setPrefWidth(138);
+
+        categoryTable.getColumns().addAll(catColumn, budgetColumn);
 
         // Buttons
         Button btn = new Button("Generate Monthly Report");
@@ -72,7 +92,7 @@ public class ReportsTab {
         expenseLabel = new Label();
         balanceLabel = new Label();
 
-        VBox summary = new VBox(5, btn, incomeLabel, expenseLabel, balanceLabel);
+        VBox summary = new VBox(5, btn, incomeLabel, expenseLabel, balanceLabel, categoryTable);
 
         HBox root = new HBox(10, summary, transactionTable);
         root.setPadding(new Insets(15));
@@ -92,6 +112,7 @@ public class ReportsTab {
             if (type == null) return;
 
             manager.generateMonthlyReport(YearMonth.from(Month.valueOf(type)));
+            saveData();
 
         } catch (Exception e) {
 
