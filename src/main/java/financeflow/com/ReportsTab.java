@@ -22,6 +22,8 @@ import javafx.scene.layout.VBox;
 public class ReportsTab {
     private TableView<Transaction> transactionTable;
     private ObservableList<Transaction> transactionsData; 
+    TableView<Map.Entry<String, Double>> categoryTable;
+    private ObservableList<Map.Entry<String, Double>> categoryData;
 
     private final FinanceManager manager;
     private final DataStore store;
@@ -31,6 +33,7 @@ public class ReportsTab {
     private Label incomeLabel;
     private Label expenseLabel;
     private Label balanceLabel;
+    private Label categoryBreakdownLabel;
 
     public ReportsTab(FinanceManager financeManager, DataStore dataStore){
         manager = financeManager;
@@ -64,12 +67,11 @@ public class ReportsTab {
         noteCol.setPrefWidth(200);
 
         transactionTable.getColumns().addAll(typeCol, amountCol, dateCol, categoryCol, noteCol);
-        
 
         //Category Breakdown Table
-        TableView<Map.Entry<String, Double>> categoryTable = new TableView<>();
-        ObservableList<Map.Entry<String, Double>> items = FXCollections.observableArrayList(report.getCategoryBreakdown().entrySet());
-        categoryTable.setItems(items);
+        categoryTable = new TableView<>();
+        categoryData = FXCollections.observableArrayList(report.getCategoryBreakdown().entrySet());
+        categoryTable.setItems(categoryData);
 
         //Table Columns
         TableColumn<Map.Entry<String, Double>, String> catColumn = new TableColumn<>("Category");
@@ -91,8 +93,12 @@ public class ReportsTab {
         incomeLabel = new Label();
         expenseLabel = new Label();
         balanceLabel = new Label();
+        categoryBreakdownLabel = new Label();
+        categoryBreakdownLabel.setText("Category Breakdown");
 
-        VBox summary = new VBox(5, btn, incomeLabel, expenseLabel, balanceLabel, categoryTable);
+        VBox summary = new VBox(5, btn, incomeLabel, expenseLabel, balanceLabel, categoryBreakdownLabel, categoryTable);
+
+        updateSummary();
 
         HBox root = new HBox(10, summary, transactionTable);
         root.setPadding(new Insets(15));
@@ -111,14 +117,32 @@ public class ReportsTab {
             String type = typeDialog.showAndWait().orElse(null);
             if (type == null) return;
 
-            manager.generateMonthlyReport(YearMonth.from(Month.valueOf(type)));
+            report = manager.generateMonthlyReport(YearMonth.from(Month.valueOf(type)));
+
             saveData();
+            updateData();
+            updateSummary();
 
         } catch (Exception e) {
-
+            showError("Invalid Input.");
         }
     }
 
+    private void updateData() {
+        transactionsData.setAll(manager.getTransactions());
+        categoryData.setAll(report.getCategoryBreakdown().entrySet());
+    }
+
+    private void updateSummary() {
+        double income = report.getTotalIncome();
+
+        double expenses = report.getTotalExpenses();
+
+        incomeLabel.setText("Total Income: " + income);
+        expenseLabel.setText("Total Expenses: " + expenses);
+        balanceLabel.setText("Balance: " + (income - expenses));
+    }
+    
     private void saveData() {
         try {
             store.save(manager, "data/finance_data.txt");
