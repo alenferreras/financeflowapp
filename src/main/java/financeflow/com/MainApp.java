@@ -10,6 +10,7 @@ public class MainApp extends Application {
 
     private final FinanceManager manager = new FinanceManager();
     private final DataStore store = new DataStore();
+    private final DashboardTab dashboardTabcontent = new DashboardTab(manager, store);
     private final TransactionTab transactionTabContent = new TransactionTab(manager, store);
     private final CategoriesTab categoriesTabContent = new CategoriesTab(manager, store);
     private final BudgetsTab budgetsTabContent = new BudgetsTab(manager, store);
@@ -26,7 +27,7 @@ public class MainApp extends Application {
         }
         
         TabPane tabPane = new TabPane();
-        Tab dashboardTab = new Tab("Dashboard");
+        Tab dashboardTab = dashboardTabcontent.createTab();
         Tab transactionsTab = transactionTabContent.createTab();
         Tab categoriesTab = categoriesTabContent.createTab();
         Tab budgetsTab = budgetsTabContent.createTab();
