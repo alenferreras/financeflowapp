@@ -111,13 +111,14 @@ public class ReportsTab {
 
     private void generateReport(){
         try {
-            ChoiceDialog<String> typeDialog = new ChoiceDialog<>("JANUARY", "JANUARY", "FEBURARY",
+            int currentYear = LocalDate.now().getYear();
+            ChoiceDialog<String> typeDialog = new ChoiceDialog<>("JANUARY", "JANUARY", "FEBRUARY",
                     "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER");
             typeDialog.setHeaderText("Select Month");
             String type = typeDialog.showAndWait().orElse(null);
             if (type == null) return;
 
-            report = manager.generateMonthlyReport(YearMonth.from(Month.valueOf(type)));
+            report = manager.generateMonthlyReport(YearMonth.of(currentYear, Month.valueOf(type)));
 
             saveData();
             updateData();
